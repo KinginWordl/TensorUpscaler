@@ -16,3 +16,9 @@ Meanwhile, the compiled output files will be generated in the `bin` folder by de
 ## Dependency Management
 
 The `JAVA PROJECTS` view allows you to manage your dependencies. More details can be found [here](https://github.com/microsoft/vscode-java-dependency#manage-dependencies).
+
+
+## Notas de lo de ahora
+- TensorCodec (decode/encode) + TensorMath para clamp. (Tú parte, Luis)
+- TensorOps (bilinear, convolve, lerp).
+- La GUI solo usa: ImageProcessor (y ya conectamos todo con DefaultImageProcessor).
