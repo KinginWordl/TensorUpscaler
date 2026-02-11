@@ -2,86 +2,61 @@ package com.tensorupscaler.core;
 
 import java.awt.image.BufferedImage;
 
-public final class SimpleTensorCodec implements TensorCodec {
+public class SimpleTensorCodec implements TensorCodec {
 
-  @Override
-  public TensorRGB decode(BufferedImage image) throws IllegalArgumentException {
-    if (image == null) throw new IllegalArgumentException(
-      "image must not be null"
-    );
+    @Override
+    public TensorRGB decode(BufferedImage image) {
+        int w = image.getWidth();
+        int h = image.getHeight();
 
-    final int w = image.getWidth();
-    final int h = image.getHeight();
+        
+        float[][] r = new float[h][w];
+        float[][] g = new float[h][w];
+        float[][] b = new float[h][w];
 
-    final int[] argb = new int[w * h];
-    image.getRGB(0, 0, w, h, argb, 0, w);
+        for (int y = 0; y < h; y++) {
+            for (int x = 0; x < w; x++) {
+                int rgb = image.getRGB(x, y);
 
-    final float[][] r = new float[h][w];
-    final float[][] g = new float[h][w];
-    final float[][] b = new float[h][w];
-
-    int idx = 0;
-    for (int y = 0; y < h; y++) {
-      final float[] rRow = r[y];
-      final float[] gRow = g[y];
-      final float[] bRow = b[y];
-
-      for (int x = 0; x < w; x++) {
-        final int px = argb[idx++];
-
-        // BufferedImage#getRGB returns int in default RGB color model (ARGB packed).
-        rRow[x] = (px >> 16) & 0xFF;
-        gRow[x] = (px >> 8) & 0xFF;
-        bRow[x] = px & 0xFF;
-      }
+                
+                r[y][x] = (rgb >> 16) & 0xFF;
+                g[y][x] = (rgb >> 8) & 0xFF;
+                b[y][x] = rgb & 0xFF;
+            }
+        }
+        
+       
+        return new TensorRGB(w, h, r, g, b);
     }
 
-    return new TensorRGB(w, h, r, g, b);
-  }
+    
+    @Override
+    public BufferedImage encode(TensorRGB tensor) {
+        int w = tensor.width();
+        int h = tensor.height();
+        BufferedImage img = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
 
-  @Override
-  public BufferedImage encode(TensorRGB tensor)
-    throws IllegalArgumentException {
-    if (tensor == null) throw new IllegalArgumentException(
-      "tensor must not be null"
-    );
+        
+        float[][] rMat = tensor.r();
+        float[][] gMat = tensor.g();
+        float[][] bMat = tensor.b();
 
-    final int w = tensor.width();
-    final int h = tensor.height();
+        for (int y = 0; y < h; y++) {
+            for (int x = 0; x < w; x++) {
+               
+                int r = clamp(rMat[y][x]);
+                int g = clamp(gMat[y][x]);
+                int b = clamp(bMat[y][x]);
 
-    final BufferedImage out = new BufferedImage(
-      w,
-      h,
-      BufferedImage.TYPE_INT_RGB
-    );
-    final int[] rgb = new int[w * h];
-
-    final float[][] r = tensor.r();
-    final float[][] g = tensor.g();
-    final float[][] b = tensor.b();
-
-    int idx = 0;
-    for (int y = 0; y < h; y++) {
-      final float[] rRow = r[y];
-      final float[] gRow = g[y];
-      final float[] bRow = b[y];
-
-      for (int x = 0; x < w; x++) {
-        final int rr = clamp255ToInt(rRow[x]);
-        final int gg = clamp255ToInt(gRow[x]);
-        final int bb = clamp255ToInt(bRow[x]);
-
-        rgb[idx++] = (rr << 16) | (gg << 8) | bb;
-      }
+               
+                int rgb = (r << 16) | (g << 8) | b;
+                img.setRGB(x, y, rgb);
+            }
+        }
+        return img;
     }
 
-    out.setRGB(0, 0, w, h, rgb, 0, w);
-    return out;
-  }
-
-  private static int clamp255ToInt(float v) {
-    if (v <= 0f) return 0;
-    if (v >= 255f) return 255;
-    return (int) (v + 0.5f); // round to nearest
-  }
+    private int clamp(float v) {
+        return Math.min(255, Math.max(0, Math.round(v)));
+    }
 }
