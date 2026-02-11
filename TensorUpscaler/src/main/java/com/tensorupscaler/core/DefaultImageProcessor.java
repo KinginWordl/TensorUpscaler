@@ -15,15 +15,15 @@ public final class DefaultImageProcessor implements ImageProcessor {
 
   @Override
   public BufferedImage process(
-    BufferedImage input,
-    int scale,
-    float sharpenAmount,
-    float[][] kernel3x3
+          BufferedImage input,
+          int scale,
+          float sharpenAmount,
+          float[][] kernel3x3
   ) throws IllegalArgumentException {
     Objects.requireNonNull(input, "input");
     if (scale < 1) throw new IllegalArgumentException("scale must be >= 1");
     if (
-      sharpenAmount < 0f || sharpenAmount > 1f
+            sharpenAmount < 0f || sharpenAmount > 1f
     ) throw new IllegalArgumentException("sharpenAmount must be in [0..1]");
 
     TensorRGB t = codec.decode(input);

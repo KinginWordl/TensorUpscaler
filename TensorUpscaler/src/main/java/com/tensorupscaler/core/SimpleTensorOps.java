@@ -5,7 +5,7 @@ public final class SimpleTensorOps implements TensorOps {
 
   @Override
   public TensorRGB upscaleBilinear(TensorRGB src, int scale)
-    throws IllegalArgumentException {
+          throws IllegalArgumentException {
     if (src == null) throw new IllegalArgumentException("src must not be null");
     if (scale < 1) throw new IllegalArgumentException("scale must be >= 1");
     if (scale == 1) return src;
@@ -41,11 +41,11 @@ public final class SimpleTensorOps implements TensorOps {
         final float w22 = dx * dy;
 
         float vr =
-          w11 * r[y0][x0] + w12 * r[y0][x1] + w21 * r[y1][x0] + w22 * r[y1][x1];
+                w11 * r[y0][x0] + w12 * r[y0][x1] + w21 * r[y1][x0] + w22 * r[y1][x1];
         float vg =
-          w11 * g[y0][x0] + w12 * g[y0][x1] + w21 * g[y1][x0] + w22 * g[y1][x1];
+                w11 * g[y0][x0] + w12 * g[y0][x1] + w21 * g[y1][x0] + w22 * g[y1][x1];
         float vb =
-          w11 * b[y0][x0] + w12 * b[y0][x1] + w21 * b[y1][x0] + w22 * b[y1][x1];
+                w11 * b[y0][x0] + w12 * b[y0][x1] + w21 * b[y1][x0] + w22 * b[y1][x1];
 
         or[y2][x2] = clamp255(vr);
         og[y2][x2] = clamp255(vg);
@@ -58,7 +58,7 @@ public final class SimpleTensorOps implements TensorOps {
 
   @Override
   public TensorRGB convolve3x3(TensorRGB src, float[][] kernel)
-    throws IllegalArgumentException {
+          throws IllegalArgumentException {
     if (src == null) throw new IllegalArgumentException("src must not be null");
     requireKernel3x3(kernel);
 
@@ -76,8 +76,8 @@ public final class SimpleTensorOps implements TensorOps {
     for (int y = 0; y < h; y++) {
       for (int x = 0; x < w; x++) {
         float ar = 0f,
-          ag = 0f,
-          ab = 0f;
+                ag = 0f,
+                ab = 0f;
 
         for (int ky = 0; ky < 3; ky++) {
           final int sy = clampIndex(y + ky - 1, h);
@@ -108,14 +108,14 @@ public final class SimpleTensorOps implements TensorOps {
 
   @Override
   public TensorRGB lerp(TensorRGB a, TensorRGB b, float amount)
-    throws IllegalArgumentException {
+          throws IllegalArgumentException {
     if (a == null) throw new IllegalArgumentException("a must not be null");
     if (b == null) throw new IllegalArgumentException("b must not be null");
     if (a.width() != b.width() || a.height() != b.height()) {
       throw new IllegalArgumentException("Tensor dimensions must match");
     }
     if (amount < 0f || amount > 1f) throw new IllegalArgumentException(
-      "amount must be in [0..1]"
+            "amount must be in [0..1]"
     );
 
     final int w = a.width();
@@ -171,13 +171,13 @@ public final class SimpleTensorOps implements TensorOps {
   }
 
   private static void requireKernel3x3(float[][] k)
-    throws IllegalArgumentException {
+          throws IllegalArgumentException {
     if (k == null || k.length != 3) throw new IllegalArgumentException(
-      "Kernel must be 3x3"
+            "Kernel must be 3x3"
     );
     for (int i = 0; i < 3; i++) {
       if (k[i] == null || k[i].length != 3) throw new IllegalArgumentException(
-        "Kernel must be 3x3"
+              "Kernel must be 3x3"
       );
     }
   }

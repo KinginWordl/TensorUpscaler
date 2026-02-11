@@ -10,6 +10,7 @@ import javafx.application.Application;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -38,6 +39,8 @@ public class App extends Application {
   @Override
   public void start(Stage stage) {
     stage.setTitle("TensorUpscaler");
+    javax.imageio.ImageIO.scanForPlugins();
+
 
     ImageView left = new ImageView();
     left.setPreserveRatio(true);
@@ -67,16 +70,28 @@ public class App extends Application {
         fc.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter("Imágenes", "*.png", "*.jpg", "*.jpeg", "*.bmp", "*.tif", "*.tiff")
         );
+
         File f = fc.showOpenDialog(stage);
         if (f == null) return;
 
         original = ImageIO.read(f);
-        result = null;
+
+        if (original == null) {
+          showError("Formato no soportado",
+                  "No se pudo leer la imagen.",
+                  "El archivo seleccionado no es una imagen válida o no está soportado por ImageIO.");
+          return;
+        }
 
         left.setImage(SwingFXUtils.toFXImage(original, null));
         right.setImage(null);
+        result = null;
+
       } catch (Exception ex) {
         ex.printStackTrace();
+        showError("Error al abrir imagen",
+                "Ocurrió un error al intentar abrir el archivo.",
+                ex.getMessage());
       }
     });
 
@@ -135,4 +150,13 @@ public class App extends Application {
     stage.setScene(scene);
     stage.show();
   }
+
+  private void showError(String title, String header, String content) {
+    Alert alert = new Alert(Alert.AlertType.ERROR);
+    alert.setTitle(title);
+    alert.setHeaderText(header);
+    alert.setContentText(content);
+    alert.showAndWait();
+  }
+
 }

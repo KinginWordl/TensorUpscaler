@@ -6,10 +6,10 @@ public interface TensorOps {
   TensorRGB lerp(TensorRGB a, TensorRGB b, float amount);
 
   default TensorRGB process(
-    TensorRGB input,
-    int scale,
-    float[][] kernel3x3,
-    float amount
+          TensorRGB input,
+          int scale,
+          float[][] kernel3x3,
+          float amount
   ) {
     TensorRGB up = upscaleBilinear(input, scale);
     if (kernel3x3 == null || amount <= 0f) return up;

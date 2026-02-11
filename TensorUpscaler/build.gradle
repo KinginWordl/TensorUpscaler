@@ -28,4 +28,5 @@ dependencies {
 
 application {
     mainClass = "com.tensorupscaler.App"
+    applicationDefaultJvmArgs = ["--enable-native-access=javafx.graphics"]
 }
