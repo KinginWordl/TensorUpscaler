@@ -11,8 +11,14 @@ import javafx.embed.swing.SwingFXUtils;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
+import io.github.palexdev.materialfx.controls.MFXButton;
+import io.github.palexdev.materialfx.controls.MFXComboBox;
+import io.github.palexdev.materialfx.theming.MaterialFXStylesheets;
+import javafx.geometry.Pos;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.layout.VBox;
+import javafx.scene.Cursor;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.image.ImageView;
@@ -20,7 +26,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-
 import javax.imageio.ImageIO;
 import java.io.File;
 
@@ -38,6 +43,16 @@ public class App extends Application {
 
   @Override
   public void start(Stage stage) {
+    Label title = new Label("TensorUpscaler");
+    title.setFont(Font.font("System", FontWeight.BOLD, 28));
+
+    Label subtitle = new Label("Escalado de imágenes mediante operaciones matriciales y tensores.");
+    subtitle.setStyle("-fx-text-fill: #0E0F19;");
+
+    VBox header = new VBox(5, title, subtitle);
+    header.setAlignment(Pos.CENTER);
+    header.setPadding(new Insets(20));
+
     stage.setTitle("TensorUpscaler");
     javax.imageio.ImageIO.scanForPlugins();
 
@@ -50,16 +65,41 @@ public class App extends Application {
     right.setPreserveRatio(true);
     right.setFitWidth(520);
 
-    Button openBtn = new Button("Abrir");
-    Button processBtn = new Button("Procesar");
-    Button saveBtn = new Button("Guardar");
+    MFXButton openBtn = new MFXButton("Abrir");
+    MFXButton processBtn = new MFXButton("Procesar");
+    MFXButton saveBtn = new MFXButton("Guardar");
+    openBtn.getStyleClass().add("round-button");
+    processBtn.getStyleClass().add("round-button");
+    saveBtn.getStyleClass().add("round-button");
+    openBtn.setCursor(javafx.scene.Cursor.HAND);
+    processBtn.setCursor(javafx.scene.Cursor.HAND);
+    saveBtn.setCursor(javafx.scene.Cursor.HAND);
 
-    ComboBox<Integer> scaleBox = new ComboBox<>();
+
+
+    MFXComboBox<Integer> scaleBox = new MFXComboBox<>();
     scaleBox.getItems().addAll(2, 3, 4);
-    scaleBox.setValue(2);
+    scaleBox.selectItem(2);
+    scaleBox.setCursor(Cursor.HAND);
 
     Slider sharpen = new Slider(0, 1, 0.6);
     sharpen.setPrefWidth(160);
+    sharpen.setCursor(Cursor.HAND);
+
+    sharpen.setStyle(
+            "-fx-control-inner-background: #ccd5ae;" +
+                    "-fx-accent: #2d3d3d;"
+    );
+
+    Label sharpenValue = new Label(String.format("%.2f", sharpen.getValue()));
+    sharpenValue.setStyle("-fx-font-weight: bold; -fx-min-width: 40; -fx-alignment: center;");
+
+    sharpen.valueProperty().addListener((obs, oldVal, newVal) -> {
+      sharpenValue.setText(String.format("%.2f", newVal.doubleValue()));
+    });
+
+    VBox sharpenContainer = new VBox(2, sharpenValue, sharpen);
+    sharpenContainer.setAlignment(Pos.CENTER);
 
     Label sharpenLabel = new Label("Nitidez");
 
@@ -134,19 +174,35 @@ public class App extends Application {
             scaleBox,
             sharpenLabel,
             sharpen,
+            sharpenContainer,
             processBtn,
             saveBtn
     );
+    controls.getStyleClass().add("controls-box");
     controls.setPadding(new Insets(10));
+    controls.setAlignment(Pos.CENTER);
+
 
     HBox images = new HBox(10, left, right);
     images.setPadding(new Insets(10));
+    images.getStyleClass().add("images-box");
+    images.setAlignment(Pos.CENTER);
 
     BorderPane root = new BorderPane();
-    root.setTop(controls);
+    root.getStyleClass().add("root");
+    VBox topSection = new VBox(header, controls);
+    topSection.setAlignment(Pos.CENTER);
+
+    root.setTop(topSection);
     root.setCenter(images);
 
     Scene scene = new Scene(root, 1100, 650);
+    scene.getStylesheets().add(
+            MaterialFXStylesheets.DEFAULT.get().toExternalForm()
+    );
+    scene.getStylesheets().add(
+            getClass().getResource("/styles.css").toExternalForm()
+    );
     stage.setScene(scene);
     stage.show();
   }
