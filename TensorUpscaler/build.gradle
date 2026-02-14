@@ -16,6 +16,8 @@ javafx {
 
 
 dependencies {
+    implementation 'io.github.palexdev:materialfx:11.17.0'
+
     implementation "org.controlsfx:controlsfx:11.2.3"
 
     implementation "com.twelvemonkeys.imageio:imageio-core:3.13.0"

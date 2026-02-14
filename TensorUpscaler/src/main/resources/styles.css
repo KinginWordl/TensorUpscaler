@@ -1,0 +1,64 @@
+.root {
+    -fx-background-color: #81A684;
+    -fx-alignment: CENTER;
+}
+
+.controls-box {
+    -fx-background-color: #466060;
+    -fx-background-radius: 25 25 0 0;
+    -fx-padding: 20;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 15, 0.2, 0, 4);
+}
+
+.images-box {
+    -fx-background-color: #0E0F19;
+    -fx-padding: 20;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 15, 0.2, 0, 4);
+}
+
+.round-button {
+    -fx-background-color: #ccd5ae;
+    -fx-background-radius: 25;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+}
+
+.round-button:focused {
+    -fx-background-radius: 25;
+    -fx-background-color: #ccd5ae;
+}
+.round-button:hover {
+    -fx-background-radius: 25;
+    -fx-background-color: #ccd5ae;
+}
+
+.mfx-combo-box {
+    -fx-alignment: CENTER;
+    -fx-font-size: 14px;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-font-weight: bold;
+    -fx-content-display: CENTER;
+    -fx-text-alignment: center;
+}
+
+.mfx-combo-box,
+.mfx-combo-box * {
+    -fx-cursor: hand;
+    -fx-background-color: #ccd5ae;
+}
+
+.controls-box Label {
+    -fx-text-fill: #ccd5ae;
+}
+
+.slider .thumb {
+    -fx-background-color: #2d3d3d;
+    -fx-background-radius: 1em;
+    -fx-pref-width: 16px;
+    -fx-pref-height: 16px;
+}
+
+.slider:focused {
+    -fx-background-color: transparent;
+}
